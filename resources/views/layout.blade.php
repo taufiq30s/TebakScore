@@ -8,10 +8,13 @@
     <title>Tebak Score</title>
 </head>
 <body>
-    @include('navbar')
+  <div class="wrapper">
     <div class="container">
-        @yield('content')
+      @include('header')
+      @include('navbar')
+      @yield('content')
     </div>
-    <script src="{{ asset('js/app.js')}}"></script>
+  </div>
+  <script src="{{ asset('js/app.js')}}"></script>
 </body>
 </html>
