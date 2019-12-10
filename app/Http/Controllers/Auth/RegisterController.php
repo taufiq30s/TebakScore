@@ -61,6 +61,10 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\User
      */
+    protected function RegisterForm(){
+        return view('auth/registerAdmin');
+    }
+    
     protected function create(array $data)
     {
         return User::create([
@@ -69,5 +73,16 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'is_admin' => $data['isAdmin']
         ]);
+    }
+
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+        event(new Registered($user = $this->create($request->all())));
+
+        // $this->guard()->login($user);
+
+        return $this->registered($request, $user)
+                        ?: redirect($this->redirectPath());
     }
 }

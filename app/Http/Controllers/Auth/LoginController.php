@@ -38,6 +38,12 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    protected function authenticated($request, $user)
+    {
+        if($user->is_admin === '0') return redirect('admin');
+        else return redirect('/');
+    }
+
     public function login(Request $request)
     {
         $data = $request->all();
