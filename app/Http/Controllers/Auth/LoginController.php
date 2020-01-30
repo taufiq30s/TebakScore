@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
@@ -26,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -38,30 +39,23 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    protected function authenticated($request, $user)
-    {
-        if($user->is_admin === '0') return redirect('admin');
-        else return redirect('/');
-    }
-
-    public function login(Request $request)
-    {
-        $data = $request->all();
+    // Override Default Function
+    public function login(Request $request){
         $this->validate($request, [
-            'email' => 'required|email',
+            'user' => 'required',
             'password' => 'required',
         ]);
 
-        if(auth()->attempt(array('email' => $data['email'], 'password' => $data['password'])))
+        $input = $request->all();
+
+        $fieldType = filter_var($request->user, FILTER_VALIDATE_EMAIL) ? 'email' : 'idUser';
+        if(auth()->attempt(array($fieldType => $input['user'], 'password' => $input['password'])))
         {
-            if(auth()->user()->is_admin == 1){
-                return redirect()->route('admin.home');
-            }
-            else return redirect()->route('home');
-        }
-        else{
+            if(auth()->user()->admin) return redirect('/admin');
+            else return redirect('/');
+        }else{
             return redirect()->route('login')
-                ->with('error', 'Email / Password Salah');
+                ->with('error','Email-Address And Password Are Wrong.');
         }
     }
 }

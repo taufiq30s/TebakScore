@@ -11,29 +11,41 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', function () {
     return view('home');
 });
 
-// Auth::routes();
-
-Route::get('login', [
-    'as' => 'login',
-    'uses' => 'Auth\LoginController@showLoginForm'
-  ]);
-  Route::post('login', [
-    'as' => '',
-    'uses' => 'Auth\LoginController@login'
-  ]);
-  Route::post('logout', [
-    'as' => 'logout',
-    'uses' => 'Auth\LoginController@logout'
-  ]);
+Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('register', 'Auth\RegisterController@RegisterForm')->name('register');
 
-Route::group(['middleware' => 'App\Http\Middleware\isAdmin'], function()
-{
-    Route::match(['get', 'post'], '/admin', 'HomeController@adminHome')->name('admin.home');
+Route::group(['prefix' => 'member'], function() {
+    Route::get('profile', 'ProfileController@index')->name('profile');
+
+    Route::get('tebak', 'TebakController@index')->name('tebak');
+});
+
+Route::group(['prefix' => 'admin', 'middleware' => 'App\Http\Middleware\IsAdmin'], function () {
+    
+    Route::match(['get', 'post'], '/', 'HomeController@admin');
+
+    // Team Area
+    Route::get('team', 'TeamController@index')->name('teamArea');
+    Route::get('team/add', 'TeamController@create');
+    Route::post('team', 'TeamController@register');
+    Route::get('team/{idTeam}/edit','TeamController@edit');
+    Route::post('team/{idTeam}', 'TeamController@update');
+    Route::delete('team/{idTeam}', 'TeamController@destroy');
+
+    // Match Area
+    Route::get('match', 'MatchController@index')->name('matchArea');
+    Route::get('match/add', 'MatchController@create');
+    Route::post('match', 'MatchController@register');
+    Route::get('match/{idMatch}/edit','MatchController@edit');
+    Route::post('match/{idMatch}', 'MatchController@update');
+    Route::get('match/{idMatch}/score','MatchController@score');
+    Route::post('match/score/{idMatch}', 'MatchController@updateScore');
+    Route::delete('match/{idMatch}', 'MatchController@destroy');
 });
