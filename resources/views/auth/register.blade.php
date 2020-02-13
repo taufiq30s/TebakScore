@@ -124,7 +124,7 @@
               <div class="col-md-6">
                 <select class="form-control" id="isAdmin" name="isAdmin" style="display: none">
                   <option name="isAdmin" value="1">Admin</option>
-                  <option name="isAdmin" value="0" default>Member</option>
+                  <option name="isAdmin" value="0" selected="selected">Member</option>
                 </select>
               </div>
             </div>

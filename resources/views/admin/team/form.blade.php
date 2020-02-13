@@ -7,9 +7,9 @@
         <div class="card-header">Manage Team</div>
         <div class="card-body">
           @if(!isset($team->idTeam))
-          <form action="/admin/team" method="post">
+          <form action="{{ route('registTeam') }}" method="post">
           @else
-          <form action="/admin/team/{{$team->idTeam}}" method="post">
+          <form action="{{ route('editTeam', ['idTeam' => $team->idTeam]) }}" method="post">
           @endif
             @csrf
             <div class="form-group row">

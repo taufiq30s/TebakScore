@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Match;
 use App\Team;
+use App\Bet;
+use App\User;
 use Illuminate\Auth\Events\Registered;
 use \Validator;
 
@@ -76,9 +78,33 @@ class MatchController extends Controller
     return view('admin/match/form', ['match' => $match, 'teams' => $teams, 'matchStarted' => true]);
   }
 
+  private function updatePoint($status, $idMatch, $homeScore, $awayScore, $oldHomeScore, $oldAwayScore){
+    $usersBet = Bet::where('idMatch', $idMatch)->get();
+    // dd($usersBet->get());
+    foreach($usersBet as $userBet){
+      if($userBet->scorePredHome == $homeScore && $userBet->scorePredAway == $awayScore){
+        $user = User::where('idUser', $userBet->idUser)->first();
+        $user->points = $user->points+1;
+        // dd($user->points);
+        $user->save();
+      }
+      elseif($status == 1 && $userBet->scorePredHome == $oldHomeScore && $userBet->scorePredAway == $oldAwayScore){
+        $user = User::where('idUser', $userBet->idUser)->first();
+        if($user->points-1 >= 0)
+          $user->points = $user->points-1;
+        $user->save();
+      }
+    }
+  }
+
   public function updateScore(Request $req, $idMatch){
     $match = Match::where('idMatch', $idMatch)->first();
     $match->setKeyName('idMatch');
+      if($match->isSetted == 0){
+        $match->isSetted = 1;
+        $this->updatePoint(0, $idMatch, $req->homeScore, $req->awayScore, $match->scoreTeamHome, $match->scoreTeamAway);
+      }
+      else $this->updatePoint(1, $idMatch, $req->homeScore, $req->awayScore, $match->scoreTeamHome, $match->scoreTeamAway);
     $match->scoreTeamHome = $req->homeScore;
     $match->scoreTeamAway = $req->awayScore;
     $match->save();

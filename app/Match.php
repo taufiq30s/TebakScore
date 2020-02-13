@@ -17,4 +17,8 @@ class Match extends Model
     public function away(){
         return $this->belongsTo(Team::class, 'idTeamAway', 'idTeam');
     }
+
+    public function betMatch(){
+        return $this->hasMany(Bet::class, 'idMatch', 'idMatch');
+    }
 }

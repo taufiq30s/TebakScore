@@ -18,7 +18,7 @@
                 <th scope="col">Score Tim Rumah</th>
                 <th scope="col">Score Tim Tamu</th>
                 <th scope="col">Waktu Match</th>
-                <th scope="col" colspan="3">Action</th>
+                <th scope="col" colspan="2">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -42,11 +42,9 @@
                   @endif
                 </td>
                 <td>{{date( "d-m-Y H:i", strtotime( $match->matchTime ) )}}</td>
+                @if((Carbon\Carbon::parse($match->matchTime)->addMinutes(90))->greaterThan(Carbon\Carbon::now()))
                 <td>
                   <a href="{{action('MatchController@edit', $match['idMatch'])}}" class="btn btn-warning btn-sm {{ !(Carbon\Carbon::parse($match->matchTime)->greaterThan(Carbon\Carbon::now())) ? 'disabled' : '' }}">Edit</a>
-                </td>
-                <td>
-                  <a href="{{action('MatchController@score', $match['idMatch'])}}" class="btn btn-info btn-sm {{ ((Carbon\Carbon::parse($match->matchTime)->addMinutes(90))->greaterThan(Carbon\Carbon::now())) ? 'disabled' : '' }}">Set Score</a>
                 </td>
                 <td>
                   <form class="delete" onsubmit="return confirm('Anda yakin ingin menghapus match ini?');" action="{{action('MatchController@destroy', $match['idMatch'])}}" method="post">
@@ -55,6 +53,11 @@
                     <input class="btn btn-danger btn-sm" type="submit" value="Hapus">
                   </form>
                 </td>
+                @else
+                <td>
+                  <a href="{{action('MatchController@score', $match['idMatch'])}}" class="btn btn-info btn-sm {{ ((Carbon\Carbon::parse($match->matchTime)->addMinutes(90))->greaterThan(Carbon\Carbon::now())) ? 'disabled' : '' }}">Set Score</a>
+                </td>
+                @endif
               </tr>
               @endforeach
             </tbody>

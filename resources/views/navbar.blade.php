@@ -6,11 +6,11 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="{{route('home')}}">Home <span class="sr-only">(current)</span></a>
       </li>
       @if(Auth::check())
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="/login" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{Auth::user()->idUser}}</a>
+        <a class="nav-link dropdown-toggle" href="login" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{Auth::user()->idUser}}</a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           @if(Auth::user()->admin == 0)
           <a href="{{ route('profile') }}" class="dropdown-item">{{ __('Profile') }}</a>
@@ -28,12 +28,12 @@
       </li>
       @else
         <li class="nav-item">
-          <a class="nav-link" href="/login">Login</a>
+          <a class="nav-link" href="login">Login</a>
         </li>
       @endif
       @if(Auth::check() && Auth::user()->admin == 1)
       <li class="nav-item">
-        <a class="nav-link" href="/admin">Admin Area</a>
+        <a class="nav-link" href="admin">Admin Area</a>
       </li>
       @endif
       <li class="nav-item dropdown">

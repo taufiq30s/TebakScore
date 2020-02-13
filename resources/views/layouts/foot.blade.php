@@ -1,18 +1,39 @@
 <!-- Scripts -->
-<script src="{{ asset('js/app.js') }}" defer></script>
-<script src="{{ asset('bower_components/jquery/dist/jquery.min.js') }}"></script>
+<script src="{{ asset('js/app.js') }}"></script>
+<!-- <script src="{{ asset('bower_components/jquery/dist/jquery.min.js') }}"></script> -->
 <script src="{{ asset('bower_components/moment/min/moment.min.js') }}"></script>
 <script src="{{ asset('js/sweetalert.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap-datetimepicker.min.js') }}"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" defer></script>
 <script type="text/javascript">
   "use strict"
   // Inisialisasi dan deklarasi datetimepicker
   $('#datePicker').datetimepicker();
   var datePicker = $('#datePicker').data("DateTimePicker")
 
+
   $(document).ready(function() {
     // Set DateTime match dari database, jika ada 
-    datePicker.date(moment($('#matchTime').attr('data')));
+    if (datePicker != null) datePicker.date(moment($('#matchTime').attr('data')));
+
+    if(!$.fn.dataTable.isDataTable('#dtbListMatch')){
+      console.log('mira');
+      $('#dtblListMatch').DataTable({
+        "paging": true,
+        "autofit": true,
+        "searching": true,
+        "columnDefs": [{
+            "orderable": false,
+            "targets": 0
+          },
+          {
+            "orderable": false,
+            "targets": 5
+          },
+        ]
+      });
+    }
+      
   });
 
   // Increment Decrement Score
@@ -39,10 +60,13 @@
       // Jika user tekan tombol plus
       else if (type == 'plus') {
         // Enable kan tombol minus 
-        if($('.btnHome').prop('disabled') && fieldName == 'homeScore') 
+        if ($('.btnHome').prop('disabled') && fieldName == 'homeScore' || fieldName == 'homePredScore')
           $('.btnHome').prop('disabled', false);
-        else if($('.btnAway').prop('disabled') && fieldName == 'awayScore')
+        else if(input.val == "0") $('.btnHome').prop('disabled', true);
+
+        if ($('.btnAway').prop('disabled') && fieldName == 'awayScore' || fieldName == 'awayPredScore')
           $('.btnAway').prop('disabled', false);
+        else if(input.val == "0") $('.btnAway').prop('disabled', true);
 
         // jika val sekarang < val max, increment
         if (currentVal < input.attr('max')) {

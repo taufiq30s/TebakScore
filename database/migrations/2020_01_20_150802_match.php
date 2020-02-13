@@ -21,6 +21,7 @@ class Match extends Migration
             $table->unsignedBigInteger('idTeamAway');
             $table->foreign('idTeamAway')->references('idTeam')->on('team');
             $table->integer('scoreTeamAway');
+            $table->binary('isSetted')->default('0');
             $table->dateTime('matchTime');
         });
     }
